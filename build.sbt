@@ -72,7 +72,6 @@ lazy val sharedSettings = Seq(
   concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
   logBuffered in Test            := false,
   logBuffered in IntegrationTest := false,
-  //dependencyClasspath in IntegrationTest := (dependencyClasspath in IntegrationTest).value ++ (exportedProducts in Test).value,
   // https://github.com/sbt/sbt/issues/2654
   incOptions := incOptions.value.withLogRecompileOnMacro(false),
   pomIncludeRepository    := { _ => false }, // removes optional dependencies
@@ -99,22 +98,16 @@ lazy val sharedSettings = Seq(
       .stripMargin)),
 )
 
-val IT = config("it") extend Test
-
 //=> published modules
-lazy val monixConnect = (project in file("."))
-  .configs(IntegrationTest, IT)
+lazy val monixTesting = (project in file("."))
   .settings(sharedSettings)
   .settings(name := "monix-testing")
   .aggregate(scalatest)
   .dependsOn(scalatest)
 
-
-
-    val Monix = "3.4.0"
-    val CatsEffectTesting = "0.5.4"
-    val Scalatest = "3.2.9"
-
+val Monix = "3.4.0"
+val CatsEffectTesting = "0.5.4"
+val Scalatest = "3.2.9"
 
 val scalatestDeps = Seq(
   "io.monix" %% "monix-reactive" % Monix,
@@ -124,10 +117,10 @@ val scalatestDeps = Seq(
 lazy val scalatest = testFramework("scalatest", scalatestDeps)
 
 def testFramework(
-  connectorName: String,
+  testFrameworkName: String,
   projectDependencies: Seq[ModuleID]): Project = {
-  Project(id = connectorName, base = file(connectorName))
-    .settings(name := s"monix-$connectorName", libraryDependencies ++= projectDependencies)
+  Project(id = connectorName, base = file(testFrameworkName))
+    .settings(name := s"monix-testing-$testFrameworkName", libraryDependencies ++= projectDependencies)
     .settings(sharedSettings)
 }
 
