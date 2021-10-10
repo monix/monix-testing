@@ -119,7 +119,7 @@ lazy val scalatest = testFramework("scalatest", scalatestDeps)
 def testFramework(
   testFrameworkName: String,
   projectDependencies: Seq[ModuleID]): Project = {
-  Project(id = connectorName, base = file(testFrameworkName))
+  Project(id = testFrameworkName, base = file(testFrameworkName))
     .settings(name := s"monix-testing-$testFrameworkName", libraryDependencies ++= projectDependencies)
     .settings(sharedSettings)
 }
