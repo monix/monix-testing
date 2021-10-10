@@ -1,3 +1,5 @@
+package monix.testing.scalatest
+
 import scala.language.implicitConversions
 
 import cats.effect.testing.scalatest.AssertingSyntax

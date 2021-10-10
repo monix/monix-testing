@@ -1,3 +1,5 @@
+package monix.testing.scalatest
+
 import monix.eval.Task
 import monix.execution.Scheduler
 import org.scalatest.funsuite.AsyncFunSuite
