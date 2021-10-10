@@ -14,16 +14,16 @@ import org.scalatest.Succeeded
 /**
   * The code has been copied from `cats-effect-testing` and `fs2` effect test support,
   * with the difference it provides support for [[Task]] instead of [[IO]].
-  *       
+  *
   * @see https://github.com/typelevel/cats-effect-testing
   *      https://github.com/typelevel/cats-effect-testing/blob/series/1.x/scalatest/shared/src/main/scala/cats/effect/testing/scalatest/AsyncIOSpec.scala
   *      https://github.com/functional-streams-for-scala/fs2/blob/188a37883d7bbdf22bc4235a3a1223b14dc10b6c/core/shared/src/test/scala/fs2/EffectTestSupport.scala
-  *       
+  *
   * Provides support for testing Monix [[Task]] with scalatest [[AsyncTestSuite]].
-  * 
-  * It provides a set of implicit conversions to convert [[Task]] to [[Future]], so the 
+  *
+  * It provides a set of implicit conversions to convert [[Task]] to [[Future]], so the
   * user does not need to do it for every test.
-  * 
+  *
   * ==Example==
   *
   * {{{
@@ -31,11 +31,11 @@ import org.scalatest.Succeeded
   * import monix.execution.Scheduler
   * import org.scalatest.funsuite.AsyncFunSuite
   * import org.scalatest.matchers.should.Matchers
-  * 
+  *
   * class DummySpec extends AsyncFunSuite with MonixTaskSpec with Matchers {
-  * 
+  *
   *     override implicit def scheduler: Scheduler = Scheduler.io("monix-task-support-spec")
-  * 
+  *
   *     test("AsyncTestSuite with Task support") {
   *         for {
   *             r1 <- Task(2)
@@ -46,26 +46,26 @@ import org.scalatest.Succeeded
   *         }
   *     // we do not have to append `.runToFuture` as we would would using a plain [[AsyncFunSuit]].
   *     }
-  * 
+  *
   *     test("AsyncTestSuite with Task and AssertingSyntax support") {
   *         Task(2).flatMap(r1 => Task(r1 * 3)).asserting(_ shouldBe 6)
   *     }
   * }}}
   */
 trait MonixTaskSpec extends AssertingSyntax {
-    asyncTestSuite: AsyncTestSuite =>
-        
-    implicit def scheduler: Scheduler
+  asyncTestSuite: AsyncTestSuite =>
 
-    implicit def taskToFutureAssertion(task: Task[Assertion]): Future[Assertion] = task.runToFuture  
+  implicit def scheduler: Scheduler
 
-    implicit def taskRetrying[T]: Retrying[Task[T]] = new Retrying[Task[T]] {
-      override def retry(timeout: Span, interval: Span, pos: Position)(fun: => Task[T]): Task[T] =
-            Task.fromFuture(
-                Retrying.retryingNatureOfFutureT[T](executionContext).retry(timeout, interval, pos)(fun.runToFuture)
-            )
-        }
+  implicit def taskToFutureAssertion(task: Task[Assertion]): Future[Assertion] = task.runToFuture
 
-    implicit def taskUnitToFutureAssertion(task: Task[Unit]): Future[Assertion] =
-      task.as(Succeeded).runToFuture
+  implicit def taskRetrying[T]: Retrying[Task[T]] = new Retrying[Task[T]] {
+    override def retry(timeout: Span, interval: Span, pos: Position)(fun: => Task[T]): Task[T] =
+      Task.fromFuture(
+        Retrying.retryingNatureOfFutureT[T](executionContext).retry(timeout, interval, pos)(fun.runToFuture)
+      )
+  }
+
+  implicit def taskUnitToFutureAssertion(task: Task[Unit]): Future[Assertion] =
+    task.as(Succeeded).runToFuture
 }
