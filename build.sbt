@@ -98,23 +98,36 @@ lazy val sharedSettings = Seq(
       .stripMargin)),
 )
 
+lazy val skipOnPublishSettings = Seq(
+  skip in publish := true,
+  publishArtifact := false,
+)
 //=> published modules
 lazy val monixTesting = (project in file("."))
   .settings(sharedSettings)
   .settings(name := "monix-testing")
-  .aggregate(scalatest)
-  .dependsOn(scalatest)
+  .aggregate(scalatest, specs2, minitest, utest)
+  .dependsOn(scalatest, specs2, minitest, utest)
 
 val Monix = "3.4.0"
 val CatsEffectTesting = "0.5.4"
 val Scalatest = "3.2.9"
+val Specs2 = "4.13.1"
 
 val scalatestDeps = Seq(
-  "io.monix" %% "monix-reactive" % Monix,
+  "io.monix" %% "monix-eval" % Monix,
   "com.codecommit" %% "cats-effect-testing-scalatest" % CatsEffectTesting,
   "org.scalatest" %% "scalatest"   % Scalatest)
- 
+
+val specs2Deps = Seq(
+  "io.monix" %% "monix-eval" % Monix,
+  "org.specs2" %% "specs2-core" % Specs2,
+  "com.codecommit" %% "cats-effect-testing-utest" % CatsEffectTesting)
+
 lazy val scalatest = testFramework("scalatest", scalatestDeps)
+
+lazy val specs2 = testFramework("specs2", specs2Deps)
+  .settings(skipOnPublishSettings)
 
 def testFramework(
   testFrameworkName: String,

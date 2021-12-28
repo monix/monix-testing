@@ -54,10 +54,10 @@ import org.scalatest.Succeeded
   *     }
   * }}}
   */
-trait MonixTaskSpec extends AssertingSyntax {
+trait AsyncTaskSpec extends AssertingSyntax {
   asyncTestSuite: AsyncTestSuite =>
 
-  implicit def scheduler: Scheduler
+  implicit def scheduler: Scheduler = Scheduler.global
 
   implicit def taskToFutureAssertion(task: Task[Assertion]): Future[Assertion] = task.runToFuture
 
