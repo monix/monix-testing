@@ -102,6 +102,7 @@ lazy val skipOnPublishSettings = Seq(
   skip in publish := true,
   publishArtifact := false,
 )
+
 //=> published modules
 lazy val monixTesting = (project in file("."))
   .settings(sharedSettings)
@@ -112,7 +113,9 @@ lazy val monixTesting = (project in file("."))
 val Monix = "3.4.0"
 val CatsEffectTesting = "0.5.4"
 val Scalatest = "3.2.9"
+val Minitest = "2.9.6"
 val Specs2 = "4.13.1"
+val UTest = "0.7.10"
 
 val scalatestDeps = Seq(
   "io.monix" %% "monix-eval" % Monix,
@@ -124,10 +127,23 @@ val specs2Deps = Seq(
   "org.specs2" %% "specs2-core" % Specs2,
   "com.codecommit" %% "cats-effect-testing-utest" % CatsEffectTesting)
 
+val utestDeps = Seq(
+  "io.monix" %% "monix-eval" % Monix,
+  "com.lihaoyi" %% "utest" % UTest)
+
+val minitestDeps = Seq(
+  "io.monix" %% "monix-eval" % Monix,
+  "io.monix" %% "minitest" % Minitest)
+
 lazy val scalatest = testFramework("scalatest", scalatestDeps)
 
 lazy val specs2 = testFramework("specs2", specs2Deps)
   .settings(skipOnPublishSettings)
+
+lazy val utest = testFramework("utest", utestDeps)
+
+lazy val minitest = testFramework("minitest", minitestDeps)
+
 
 def testFramework(
   testFrameworkName: String,
@@ -136,11 +152,6 @@ def testFramework(
     .settings(name := s"monix-testing-$testFrameworkName", libraryDependencies ++= projectDependencies)
     .settings(sharedSettings)
 }
-
-lazy val skipOnPublishSettings = Seq(
-  skip in publish := true,
-  publishArtifact := false,
-)
 
 def minorVersion(version: String): String = {
   val (major, minor) =
