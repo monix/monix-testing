@@ -1,15 +1,24 @@
 # Monix Testing
 
 Library aimed to provide support to integrate Monix Task with different testing frameworks.
-At the moment only for [scalatest async test suites](https://www.scalatest.org/user_guide/async_testing). 
+
+## Credits
+
+This project is ported from [cats-effect-testing](https://github.com/typelevel/cats-effect-testing), with the difference that this library provides support for `Task` instead of `IO`.
+
+Mainly with the purpose of supporting task-testing on monix series 3.x, 
+since once monix is compatible with cats effect `3.0` this project will most likely not be longer useful, 
+since then we will be able to use `cats-effect-testing` 1.x 
+which is implemented with _Tagless Final_, thus compatible with
+either `IO` and `Task`.
+
+## Scalatest
 
 Add the following dependency to your *build.sbt*:
 
 ```sbt
-"io.monix" %% "monix-testing-scalatest" % "0.2.0"
+"io.monix" %% "monix-testing-scalatest" % "0.3.0"
 ```
-
-## Introduction
 
    It provides a set of implicit conversions to convert [[Task]] to [[Future]], so the
    user does not need to do it for every test.
@@ -17,10 +26,11 @@ Add the following dependency to your *build.sbt*:
   ```scala
    import monix.eval.Task
    import monix.execution.Scheduler
+   import monix.testing.scalatest.MonixTaskTest
    import org.scalatest.funsuite.AsyncFunSuite
    import org.scalatest.matchers.should.Matchers
   
-   class DummySpec extends AsyncFunSuite with MonixTaskSpec with Matchers {
+   class DummySpec extends AsyncFunSuite with MonixTaskTest with Matchers {
   
        override implicit def scheduler: Scheduler = Scheduler.io("monix-task-support-spec")
   
@@ -41,7 +51,94 @@ Add the following dependency to your *build.sbt*:
    }
    ```
 
-## Credits
 
-The code has been ported from [cats-effect-testing](https://github.com/typelevel/cats-effect-testing) and [fs2 effect test support](https://github.com/functional-streams-for-scala/fs2/blob/188a37883d7bbdf22bc4235a3a1223b14dc10b6c/core/shared/src/test/scala/fs2/EffectTestSupport.scala), with the difference that this library provides support for `Task` instead of `IO`.
-      
+## µTest
+
+Add the following dependency to your *build.sbt*:
+
+```sbt
+"io.monix" %% "monix-testing-utest" % "0.3.0"
+```
+
+It provides a wrapper conversions from [[Task]] to [[Future]].
+
+  ```scala
+   import monix.eval.Task
+   import monix.execution.Scheduler
+   import monix.testing.utest.MonixTaskTest
+   import utest.{Tests, test}
+
+   import scala.concurrent.duration._
+
+class DummySuite extends MonixTaskTest {
+
+   override implicit val scheduler: Scheduler = Scheduler.io("monix-task-test")
+
+   override val timeout = 1.second
+
+   val tests = Tests {
+      test("dummy test") {
+         Task(assert(true))
+      }
+   }
+}
+  ```
+
+
+
+
+
+## Minitest
+
+
+
+Minitest is very similar to uTest, but being strongly typed:
+
+Add the following dependency to your *build.sbt*:
+
+```sbt
+"io.monix" %% "monix-testing-utest" % "0.3.0"
+```
+
+```scala
+  import monix.eval.Task
+  import monix.execution.Scheduler
+  import monix.testing.minitest.MonixTaskTest
+
+  import scala.concurrent.duration._
+
+object DummySuite extends MonixTaskTest {
+  override val timeout = 1.second // Default timeout is 10 seconds
+
+   override protected implicit val scheduler: Scheduler = Scheduler.global
+
+   test("dummy test") {
+    Task(assert(true))
+  }
+}
+```
+
+
+## Specs2
+
+Finally, `specs2` can directly be used from `"com.codecommit" %% "cats-effect-testing-specs2" % "0.5.4"`, the latest release
+that is compatible with monix 3.x.
+
+  ```scala
+   import monix.eval.Task
+   import monix.execution.Scheduler
+   import cats.effect.testing.specs2.CatsEffect
+   import org.specs2.mutable.Specification
+
+   import scala.concurrent.duration._
+
+implicit val scheduler: Scheduler = Scheduler.global
+
+class DummySpec extends Specification with CatsEffect {
+   "dummy test" should {
+      "be successful" in Task {
+         true must beTrue
+      }
+   }
+}
+  ```

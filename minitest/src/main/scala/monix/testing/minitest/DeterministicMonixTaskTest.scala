@@ -25,20 +25,24 @@ import scala.concurrent.duration._
 
 abstract class DeterministicMonixTaskTest extends BaseMonixTaskTest[TestScheduler] {
 
-  override protected final def makeExecutionContext(): TestScheduler =  TestScheduler()
+  override protected final def makeExecutionContext(): TestScheduler = TestScheduler()
 
   override protected[minitest] implicit def suiteEc: ExecutionContext = DefaultExecutionContext
 
   override protected[minitest] def mkSpec(name: String, ec: TestScheduler, task: => Task[Unit]): TestSpec[Unit, Unit] =
-    TestSpec.sync(name, _ => {
-      val f = task.runToFuture(ec)
-      ec.tick(365.days)
-      f.value match {
-        case Some(value) => value.get
-        case None => throw new RuntimeException(
-          s"The Task in ${this.getClass.getName}.$name did not terminate.\n" +
-          "Consider using a different Scheduler."
-        )
+    TestSpec.sync(
+      name,
+      _ => {
+        val f = task.runToFuture(ec)
+        ec.tick(365.days)
+        f.value match {
+          case Some(value) => value.get
+          case None =>
+            throw new RuntimeException(
+              s"The Task in ${this.getClass.getName}.$name did not terminate.\n" +
+                "Consider using a different Scheduler."
+            )
+        }
       }
-    })
+    )
 }

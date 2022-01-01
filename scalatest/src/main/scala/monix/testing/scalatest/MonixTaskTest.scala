@@ -54,7 +54,7 @@ import org.scalatest.Succeeded
   *     }
   * }}}
   */
-trait AsyncTaskSpec extends AssertingSyntax {
+trait MonixTaskTest extends AssertingSyntax {
   asyncTestSuite: AsyncTestSuite =>
 
   implicit def scheduler: Scheduler = Scheduler.global

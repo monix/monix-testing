@@ -22,7 +22,7 @@ import monix.eval.Task
 import monix.execution.Scheduler
 import utest._
 
-abstract class MonixTaskSpec extends TestSuite {
+abstract class MonixTaskTest extends TestSuite {
 
   protected def makeExecutionContext(): ExecutionContext = ExecutionContext.global
   protected def timeout: FiniteDuration = 10.seconds
@@ -41,4 +41,3 @@ abstract class MonixTaskSpec extends TestSuite {
     }
   }
 }
-

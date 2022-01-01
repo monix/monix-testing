@@ -17,11 +17,12 @@
 package monix.testing.minitest
 
 import monix.eval.Task
+import monix.testing.minitest.TestNondetSuite.test
 
 import scala.concurrent.duration._
 
 object TestDetSuite extends DeterministicMonixTaskTest {
-  test("Task values should work") {
+  test("Task should be recognised and executed") {
     Task.sleep(1.day) >> Task(assert(false)).timeout(1.second)
   }
 

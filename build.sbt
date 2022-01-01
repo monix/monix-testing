@@ -125,7 +125,7 @@ val scalatestDeps = Seq(
 val specs2Deps = Seq(
   "io.monix" %% "monix-eval" % Monix,
   "org.specs2" %% "specs2-core" % Specs2,
-  "com.codecommit" %% "cats-effect-testing-utest" % CatsEffectTesting)
+  "com.codecommit" %% "cats-effect-testing-specs2" % CatsEffectTesting)
 
 val utestDeps = Seq(
   "io.monix" %% "monix-eval" % Monix,

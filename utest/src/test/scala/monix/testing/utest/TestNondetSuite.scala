@@ -17,11 +17,11 @@
 package monix.testing.utest
 
 import monix.eval.Task
-import utest.{Tests, assert, test}
+import utest.{assert, test, Tests}
 
 import scala.concurrent.duration._
 
-object TestNondetSuite extends MonixTaskSpec {
+object TestNondetSuite extends MonixTaskTest {
   override val timeout: FiniteDuration = 2.seconds
   override val allowNonIOTests: Boolean = true
 

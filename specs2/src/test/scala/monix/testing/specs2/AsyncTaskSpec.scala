@@ -2,7 +2,6 @@ package monix.testing.specs2
 
 import cats.effect.{IO, Resource}
 import cats.effect.concurrent.{Deferred, Ref}
-import cats.implicits._
 import org.specs2.mutable.Specification
 import cats.effect.testing.specs2.CatsEffect
 import monix.eval.Task
@@ -28,7 +27,7 @@ class CatsEffectSpecs extends Specification with CatsEffect {
     }
 
     "resource must be live for use" in {
-      Resource.make(Ref[Task].of(true))(_.set(false)).map{
+      Resource.make(Ref[Task].of(true))(_.set(false)).map {
         _.get.map(_ must beTrue)
       }
     }

@@ -5,7 +5,7 @@ import monix.execution.Scheduler
 import org.scalatest.funsuite.AsyncFunSuite
 import org.scalatest.matchers.should.Matchers
 
-class MonixTaskSupportSpec extends AsyncFunSuite with AsyncTaskSpec with Matchers {
+class MonixTaskSupportSpec extends AsyncFunSuite with MonixTaskTest with Matchers {
 
   override implicit def scheduler: Scheduler = Scheduler.io("monix-task-support-spec")
 

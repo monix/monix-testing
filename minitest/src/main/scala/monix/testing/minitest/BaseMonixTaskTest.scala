@@ -21,7 +21,6 @@ import monix.eval.Task
 
 import scala.concurrent.ExecutionContext
 
-
 private[minitest] abstract class BaseMonixTaskTest[Ec <: ExecutionContext] extends AbstractTestSuite with Asserts {
   protected def makeExecutionContext(): Ec
 
