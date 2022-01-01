@@ -2,9 +2,14 @@
 
 Library aimed to provide support to integrate Monix Task with different testing frameworks.
 
+## Releases
+
+Currently only releases available for **Scala 2.12** and **2.13**.
+**Scala3** and **ScalaJS** support is yet to come.
+
 ## Credits
 
-This project is ported from [cats-effect-testing](https://github.com/typelevel/cats-effect-testing), with the difference that this library provides support for `Task` instead of `IO`.
+This project is ported from [typelevel/cats-effect-testing](https://github.com/typelevel/cats-effect-testing), with the difference that this library provides support for `Task` instead of `IO`. So credits to their authors and maintainers🙏
 
 Mainly with the purpose of supporting task-testing on monix series 3.x, 
 since once monix is compatible with cats effect `3.0` this project will most likely not be longer useful, 
