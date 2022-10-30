@@ -28,17 +28,7 @@ lazy val sharedSettings = Seq(
     "-language:higherKinds",
     "-language:implicitConversions",
     "-language:experimental.macros"
-  )++
-    (CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((3, _)) => Seq(
-        "-unchecked",
-        "-source:3.0-migration",
-        "-rewrite"
-      )
-      case _ => Seq(
-        "-Wvalue-discard"
-      )
-    }),
+  ),
   //warnUnusedImports
   scalacOptions in (Compile, console) ++= Seq("-Ywarn-unused:imports"),
     // Linter
