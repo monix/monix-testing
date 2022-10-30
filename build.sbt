@@ -16,8 +16,8 @@ inThisBuild(List(
 skip in publish := true //required by sbt-ci-release
 
 lazy val sharedSettings = Seq(
-  scalaVersion       := "2.13.5",
-  crossScalaVersions := Seq("2.12.14", "2.13.5"),
+  scalaVersion       := "2.13.8",
+  crossScalaVersions := Seq("2.12.14", "2.13.8", "3.1.2"),
   scalafmtOnCompile  := false,
   scalacOptions ++= Seq(
     // warnings
@@ -28,7 +28,17 @@ lazy val sharedSettings = Seq(
     "-language:higherKinds",
     "-language:implicitConversions",
     "-language:experimental.macros"
-  ),
+  )++
+    (CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((3, _)) => Seq(
+        "-unchecked",
+        "-source:3.0-migration",
+        "-rewrite"
+      )
+      case _ => Seq(
+        "-Wvalue-discard"
+      )
+    }),
   //warnUnusedImports
   scalacOptions in (Compile, console) ++= Seq("-Ywarn-unused:imports"),
     // Linter
@@ -110,12 +120,12 @@ lazy val monixTesting = (project in file("."))
   .aggregate(scalatest, specs2, minitest, utest)
   .dependsOn(scalatest, specs2, minitest, utest)
 
-val Monix = "3.4.0"
+val Monix = "3.4.1"
 val CatsEffectTesting = "0.5.4"
-val Scalatest = "3.2.9"
+val Scalatest = "3.2.14"
 val Minitest = "2.9.6"
-val Specs2 = "4.13.1"
-val UTest = "0.7.10"
+val Specs2 = "4.12.0"
+val UTest = "0.8.1"
 
 val scalatestDeps = Seq(
   "io.monix" %% "monix-eval" % Monix,
@@ -124,7 +134,7 @@ val scalatestDeps = Seq(
 
 val specs2Deps = Seq(
   "io.monix" %% "monix-eval" % Monix,
-  "org.specs2" %% "specs2-core" % Specs2,
+  "org.specs2" %% "specs2-core" % Specs2 cross CrossVersion.for3Use2_13,
   "com.codecommit" %% "cats-effect-testing-specs2" % CatsEffectTesting)
 
 val utestDeps = Seq(
