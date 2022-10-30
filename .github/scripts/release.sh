@@ -1,2 +1,2 @@
 set -e
-sbt ++2.13.4 ci-release
+sbt ++3.1.2 ci-release
