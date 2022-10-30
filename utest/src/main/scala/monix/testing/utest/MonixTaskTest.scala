@@ -19,7 +19,7 @@ package monix.testing.utest
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 import monix.eval.Task
-import monix.execution.Scheduler
+import monix.execution.Scheduler.Implicits.global
 import utest._
 
 abstract class MonixTaskTest extends TestSuite {
@@ -29,7 +29,6 @@ abstract class MonixTaskTest extends TestSuite {
   protected def allowNonIOTests: Boolean = false
 
   protected lazy val executionContext: ExecutionContext = makeExecutionContext()
-  protected implicit val scheduler = Scheduler.global
 
   override def utestWrap(path: Seq[String], runBody: => Future[Any])(implicit ec: ExecutionContext): Future[Any] = {
     // Shadow the parameter EC with our EC
